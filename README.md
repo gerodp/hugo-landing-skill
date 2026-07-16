@@ -24,7 +24,7 @@ production-ready **Hugo landing page + blog** sites in minutes:
 As a plugin:
 
 ```
-/plugin marketplace add <your-gh-user>/hugo-landing-skill
+/plugin marketplace add gerodp/hugo-landing-skill
 /plugin install hugo-landing
 ```
 
