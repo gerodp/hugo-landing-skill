@@ -46,6 +46,10 @@ Ask (AskUserQuestion works well; skip anything already stated):
 7. **Analytics**: umami / plausible / ga4 / none, plus website ID and
    (self-hosted) script host.
 8. **Contact CTA**: scheduling link (Cal.com/Calendly) or email.
+9. **Copy**: does the user want to provide the copy themselves, or should
+   you draft it? If they provide it, ask them to paste it (or point to a
+   source: existing site, bio, pitch deck) — it should cover the sections
+   selected in question 5.
 
 ### 2. Scaffold (deterministic)
 
@@ -62,11 +66,23 @@ config, and runs `git init`. It refuses non-empty target directories.
 ### 3. Write the content (judgment)
 
 Edit `content/en/_index.md` (or the default language's) — the homepage is
-entirely front-matter driven. Replace ALL example copy with copy tailored to
-the user's business; ask for source material (existing site, LinkedIn, pitch)
-rather than inventing facts. Remove the sections the user didn't ask for —
+entirely front-matter driven. Remove the sections the user didn't ask for —
 an absent param removes its section. See `reference/content-model.md` for
 every param.
+
+**If the user provided copy:** map it onto the selected sections' params,
+editing only for fit (length, front-matter structure), not voice. Then check
+coverage: for EVERY selected section, is there user copy for it? For each
+section with no matching copy, ask the user explicitly for that section's
+content (one AskUserQuestion round covering all gaps, naming each section and
+what it needs — e.g. "Pricing: tier names, prices, what's included"). Do not
+silently fill gaps with invented copy; only draft a gap yourself if the user
+answers "draft it" for that section.
+
+**If the user asked you to draft it:** ask for source material (existing
+site, LinkedIn, pitch) rather than inventing facts, and replace ALL example
+copy with copy tailored to their business. Never leave the template's example
+copy in a delivered site.
 
 Also update in `config/_default/hugo.toml`:
 
