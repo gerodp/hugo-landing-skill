@@ -169,5 +169,6 @@ are generated automatically at `/tags/<tag>/`.
 | `jsonld.{personName,jobTitle,knowsAbout}` | Optional Person entity (personal brands) |
 | `analytics.{provider,id,host,domain}` | umami / plausible / ga4 |
 | `footer.{servicesTitle,services,links,copyright}` | Footer columns |
+| `footer.hideMadeWith` | `true` hides the "Made with Hugo Landing Skill" credit |
 | `noindex`, `noindexInDev` | Robots control |
 | `languagedomains`, `domaindefaultlangs` | ADVANCED: serve languages from different domains (see multilingual.md) |

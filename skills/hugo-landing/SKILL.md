@@ -107,9 +107,16 @@ scripts/add-language.sh --dir <target> --code <xx> --name "<Native Name>"
 
 Then translate what the script stubbed: `content/<xx>/` files,
 `i18n/<xx>.toml` values, and the menu names in the appended config block.
-Translate the ~9 i18n keys yourself — `reference/multilingual.md` has
+Translate the i18n keys yourself — `reference/multilingual.md` has
 ready-made TOML for common languages. hreflang + x-default are emitted
 automatically once a page has translations.
+
+**Every page must exist, translated, in every language** — homepage, blog
+posts, legal pages, everything. No language may be missing a page and no
+file may be left as an untranslated copy of the source language. verify.sh
+(step 6) enforces this and fails otherwise. The same rule applies to any
+content added later (e.g. a new blog post): create it in ALL languages with
+a shared `translationKey`.
 
 ### 5. Branding
 
@@ -132,7 +139,9 @@ automatically once a page has translations.
 scripts/verify.sh --dir <target> --smoke
 ```
 
-Runs token check, `npm install`, `hugo --gc --minify`, and a dev-server curl.
+Runs token check, translation-parity check (every page and i18n file must
+exist and be translated in every language), `npm install`,
+`hugo --gc --minify`, and a dev-server curl.
 **Treat any Hugo WARN/deprecation output as actionable: fix it now**, so the
 site is clean against the Hugo version it will build with. Then make the
 initial commit yourself (verify.sh doesn't commit). After the first commit you
@@ -173,3 +182,7 @@ Tell the user:
   `data-analytics-view="name"` (visibility) attributes — no JS needed.
 - GitHub Pages project sites (non-root URLs) are handled by the workflow's
   `-b` flag; don't hardcode the repo subpath into baseURL params elsewhere.
+- The footer shows a "Made with Hugo Landing Skill" credit linking to the
+  skill's GitHub repo (translated via the `madeWith` i18n key). Keep it by
+  default; only set `params.footer.hideMadeWith = true` if the user
+  explicitly asks to remove it.

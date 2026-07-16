@@ -47,9 +47,15 @@
       {{ end }}
     </div>
 
-    <!-- Copyright -->
-    <div class="border-t border-white/10 pt-6 text-sm text-gray-400">
-      {{ .Site.Params.footer.copyright | default (printf "© All Rights Reserved %d" now.Year) }}
+    <!-- Copyright + credit -->
+    <div class="border-t border-white/10 pt-6 text-sm text-gray-400 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <p>{{ .Site.Params.footer.copyright | default (printf "© All Rights Reserved %d" now.Year) }}</p>
+      {{ if not .Site.Params.footer.hideMadeWith }}
+      <p>
+        {{ i18n "madeWith" | default "Made with" }}
+        <a href="https://github.com/gerodp/hugo-landing-skill" target="_blank" rel="noopener" class="text-gray-300 hover:text-white underline decoration-white/30 underline-offset-2 transition-colors">Hugo Landing Skill</a>
+      </p>
+      {{ end }}
     </div>
   </div>
 </div>

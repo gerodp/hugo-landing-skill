@@ -17,7 +17,7 @@ block. Then YOU translate:
 
 1. **`content/<xx>/`** — every file. Keep `translationKey` in blog posts equal
    across languages so Hugo links them.
-2. **`i18n/<xx>.toml`** — the 9 UI strings (below).
+2. **`i18n/<xx>.toml`** — the 10 UI strings (below).
 3. **Menu names** in the appended `[languages.<xx>.menus]` block, plus
    language-specific params if wanted:
 
@@ -29,13 +29,22 @@ block. Then YOU translate:
        services = ['...']
    ```
 
+## Translation completeness
+
+Every page must exist, translated, in every language — `verify.sh` fails if
+any language is missing a `.md` file present in the default language (or has
+one the default language lacks), if any file is a byte-identical copy of its
+default-language source, or if an `i18n/<xx>.toml` is missing/identical to
+the default one. When adding new content later, always create it in all
+languages at once.
+
 ## i18n keys
 
 `readMore, previous, next, minRead, noPosts, postsAbout, allLabel,
-lastUpdated, backToHome`
+lastUpdated, backToHome, madeWith`
 
 Ready-made translations for common languages (write others yourself — they
-are 9 short strings):
+are 10 short strings):
 
 ```toml
 # es.toml
@@ -57,6 +66,8 @@ other = 'Todos'
 other = 'Última actualización:'
 [backToHome]
 other = 'Volver al inicio'
+[madeWith]
+other = 'Hecho con'
 ```
 
 ```toml
@@ -79,6 +90,8 @@ other = 'Tous'
 other = 'Dernière mise à jour :'
 [backToHome]
 other = "Retour à l'accueil"
+[madeWith]
+other = 'Créé avec'
 ```
 
 ```toml
@@ -101,6 +114,8 @@ other = 'Alle'
 other = 'Zuletzt aktualisiert:'
 [backToHome]
 other = 'Zurück zur Startseite'
+[madeWith]
+other = 'Erstellt mit'
 ```
 
 ```toml
@@ -123,6 +138,8 @@ other = 'Tutti'
 other = 'Ultimo aggiornamento:'
 [backToHome]
 other = 'Torna alla home'
+[madeWith]
+other = 'Realizzato con'
 ```
 
 ```toml
@@ -145,6 +162,8 @@ other = 'Todos'
 other = 'Última atualização:'
 [backToHome]
 other = 'Voltar ao início'
+[madeWith]
+other = 'Feito com'
 ```
 
 ## Advanced: one site, multiple domains

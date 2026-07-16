@@ -24,3 +24,6 @@ other = 'Last updated:'
 
 [backToHome]
 other = 'Back to home'
+
+[madeWith]
+other = 'Made with'
