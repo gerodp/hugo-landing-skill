@@ -24,6 +24,13 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `problemsItems[]` | Flat list alternative to groups |
 | `problemsOutro`, `problemsOutroCta` | Closing paragraph + link to `#method` |
 
+### Features grid (`#features`)
+
+| Param | Notes |
+|---|---|
+| `featuresTitle` | Section heading |
+| `[[features]]` with `icon`, `title`, `description` | 3–6 cards; `icon` is an emoji (optional) |
+
 ### Method / steps (`#method`)
 
 | Param | Notes |
@@ -32,6 +39,11 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `[[steps]]` with `title`, `duration`, `description` | Numbered step cards |
 | `stepsBody` | Markdown alternative to steps |
 | `stepsCardsTitle`, `stepsCards[]` | Optional principle cards row |
+
+### Stats band (`#stats`)
+
+`statsTitle` (optional) + `[[stats]]` with `value` (e.g. "120+"), `label`.
+Renders as a slim centered band of big numbers.
 
 ### Case studies (`#results`, dark section with carousel)
 
@@ -42,6 +54,21 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `casesResultLabel` | Label above the result box (default "Result") |
 | `socialProofKicker`, `[[socialProofClients]]` with `name` | Client names strip below carousel |
 
+### Testimonials (`#testimonials`)
+
+| Param | Notes |
+|---|---|
+| `testimonialsTitle` | Section heading |
+| `[[testimonials]]` with `quote`, `name`, `role`, `avatar` | Quote cards; `avatar` is an asset path, falls back to an initial |
+
+### Pricing (`#pricing`)
+
+| Param | Notes |
+|---|---|
+| `pricingTitle`, `pricingSubtitle` | Section header |
+| `pricingHighlightLabel` | Badge on the highlighted tier (default "Most popular") |
+| `[[pricingTiers]]` | `name`, `price`, `period`, `description`, `features[]`, `cta`, `ctaLink` (default `#contact`), `highlighted` (bool) |
+
 ### About (`#about`)
 
 | Param | Notes |
@@ -51,6 +78,12 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `aboutPortrait` | Asset path (e.g. `images/about-portrait.jpg`); omit for no photo |
 
 Social chips come from `params.social.{linkedin,github,twitter}` in hugo.toml.
+
+### Team (`#team`)
+
+`teamTitle` + `[[team]]` with `name`, `role`, `photo` (asset path, falls back
+to an initial), and optional `linkedin`/`github`/`twitter` URLs per member.
+Mostly for company/agency sites.
 
 ### Blog preview (`#blog`)
 
@@ -64,6 +97,21 @@ Social chips come from `params.social.{linkedin,github,twitter}` in hugo.toml.
 ### Open source (`#open-source`)
 
 `ossTitle` + `[[ossProjects]]` with `name`, `description`, `url`.
+
+### FAQ (`#faq`)
+
+`faqTitle` + `[[faqItems]]` with `q`, `a` (Markdown supported in answers).
+Renders accordions and emits FAQPage JSON-LD automatically — great for rich
+snippets. (For FAQs inside blog posts, use the `faq` shortcode instead.)
+
+### Newsletter (`#newsletter`)
+
+| Param | Notes |
+|---|---|
+| `newsletterTitle` | Required (with `newsletterAction`) to render |
+| `newsletterSubtitle`, `newsletterButton`, `newsletterPlaceholder` | Copy |
+| `newsletterAction` | Form POST URL — e.g. Buttondown `https://buttondown.com/api/emails/embed-subscribe/<user>`, or the action from a Mailchimp/ConvertKit embed snippet |
+| `newsletterEmailField` | `name` attribute of the email input (default `email`) |
 
 ### Final CTA (`#contact`)
 

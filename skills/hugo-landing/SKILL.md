@@ -36,8 +36,12 @@ Ask (AskUserQuestion works well; skip anything already stated):
    supported — see `reference/multilingual.md`.
 4. **Brand color + font**: any Tailwind palette name or a custom color;
    Google Font family (default Inter).
-5. **Homepage sections**: which of pain-points, method/steps, case studies,
-   about, blog preview, open-source, final CTA to include. Hero is always on.
+5. **Homepage sections**: which of pain-points, features grid, method/steps,
+   stats band, case studies, testimonials, pricing, about, team, blog preview,
+   open-source, FAQ, newsletter, final CTA to include. Hero is always on.
+   Suggest a sensible subset for the site type (consultant: pain-points,
+   method, case studies, about, FAQ; product: features, stats, testimonials,
+   pricing, FAQ) rather than enabling everything.
 6. **Deploy target**: github-pages (default) / cloudflare / netlify / amplify.
 7. **Analytics**: umami / plausible / ga4 / none, plus website ID and
    (self-hosted) script host.
@@ -134,8 +138,12 @@ Tell the user:
 - The blog section's homepage block needs `blogTitle` set; the featured post
   (`featuredPost`) must be a valid page path or it's ignored.
 - Homepage anchors in menus must use the `/#section` form (the menu partial
-  makes them work under any baseURL subpath). Section ids: `#problems`,
-  `#method`, `#results`, `#about`, `#blog`, `#contact`, `#open-source`.
+  makes them work under any baseURL subpath). Section ids in page order:
+  `#problems`, `#features`, `#method`, `#stats`, `#results`, `#testimonials`,
+  `#pricing`, `#about`, `#team`, `#blog`, `#open-source`, `#faq`,
+  `#newsletter`, `#contact`.
+- The newsletter section needs BOTH `newsletterTitle` and `newsletterAction`
+  (the provider's form endpoint) — never ship the example.com placeholder.
 - Custom analytics events: add `data-analytics-event="name"` (click) or
   `data-analytics-view="name"` (visibility) attributes — no JS needed.
 - GitHub Pages project sites (non-root URLs) are handled by the workflow's

@@ -4,8 +4,9 @@ A [Claude Code](https://claude.com/claude-code) plugin that scaffolds
 production-ready **Hugo landing page + blog** sites in minutes:
 
 - **Landing page** built from front-matter params: hero, pain points,
-  method/steps, case-study carousel, about, blog preview, final CTA — every
-  section optional.
+  features grid, method/steps, stats band, case-study carousel, testimonials,
+  pricing tiers, about, team, blog preview, open-source projects, FAQ (with
+  FAQPage JSON-LD), newsletter signup, final CTA — every section optional.
 - **Blog** with pagination, tags, RSS, reading time, prev/next navigation.
 - **SEO**: canonical URLs, OpenGraph, Twitter cards, JSON-LD graph
   (WebSite/Organization/WebPage/Article, optional Person, FAQPage via
