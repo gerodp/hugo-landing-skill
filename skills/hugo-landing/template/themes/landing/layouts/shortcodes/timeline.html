@@ -1,0 +1,21 @@
+{{- $items := transform.Unmarshal .Inner -}}
+<div class="sc-timeline">
+  {{- range $i, $item := $items }}
+  <div class="sc-timeline-item{{ if $item.current }} is-current{{ end }}">
+    <div class="sc-timeline-rail">
+      <span class="sc-timeline-dot"></span>
+      {{- if ne (add $i 1) (len $items) }}
+      <span class="sc-timeline-line"></span>
+      {{- end }}
+    </div>
+    <div class="sc-timeline-content">
+      <span class="sc-timeline-date">{{ $item.date }}</span>
+      {{- if $item.current }}
+      <span class="sc-timeline-tag">{{ $item.tag | default "You are here" }}</span>
+      {{- end }}
+      <div class="sc-timeline-label">{{ $item.label }}</div>
+      <div class="sc-timeline-desc">{{ $item.description }}</div>
+    </div>
+  </div>
+  {{- end }}
+</div>

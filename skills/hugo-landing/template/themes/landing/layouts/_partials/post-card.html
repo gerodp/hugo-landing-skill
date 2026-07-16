@@ -1,0 +1,22 @@
+<!-- Post Card Component -->
+<article class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary-700 transition-all overflow-hidden">
+  <div class="p-6">
+    <!-- Post Title -->
+    <h3 class="text-xl font-semibold text-gray-800 mb-3 hover:text-primary-600 transition-colors">
+      <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+    </h3>
+    
+    <!-- Post Summary -->
+    <p class="text-gray-600 leading-relaxed mb-4">
+      {{ .Summary | truncate 150 }}
+    </p>
+    
+    <!-- Read More Link -->
+    <a href="{{ .RelPermalink }}" class="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium">
+      {{ i18n "readMore" | default "Read more" }}
+      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </a>
+  </div>
+</article>

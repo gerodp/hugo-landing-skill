@@ -1,0 +1,12 @@
+{{- $data := transform.Unmarshal .Inner -}}
+<div class="sc-stat-grid">
+  {{- range $data.items }}
+  <div class="sc-stat">
+    <div class="sc-stat-value">{{ .value }}</div>
+    <div class="sc-stat-label">{{ .label }}</div>
+  </div>
+  {{- end }}
+</div>
+{{- with $data.footnote }}
+<div class="sc-footnote">{{ . }}</div>
+{{- end }}

@@ -1,0 +1,27 @@
+
+<!-- Small Post Card Component (for home page) -->
+<article class="blog-card group">
+  <div class="p-6 md:p-8 md:flex md:items-center md:gap-10">
+    <div class="flex-1">
+      <h3 class="text-xl md:text-2xl font-bold text-slate-950 mb-3 group-hover:text-primary-700 transition-colors">
+        <a href="{{ .RelPermalink }}" class="transition-colors">{{ .Title }}</a>
+      </h3>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        {{ .Summary | truncate 220 }}
+      </p>
+    </div>
+    <a href="{{ .RelPermalink }}" class="mt-6 md:mt-0 inline-flex shrink-0 items-center gap-2 text-sm text-primary-700 hover:text-primary-900 font-semibold">
+      {{ i18n "readMore" | default "Read more" }} <span class="blog-card-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+  {{ with .Params.tags }}
+  <div class="flex flex-wrap gap-2 border-t border-slate-100 px-6 py-4 md:px-8">
+    {{ range . }}
+    <a href="{{ printf "tags/%s/" (. | urlize) | relLangURL }}"
+       class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-primary-50 hover:text-primary-700 transition-colors">
+      {{ . }}
+    </a>
+    {{ end }}
+  </div>
+  {{ end }}
+</article>

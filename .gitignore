@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+skills/hugo-landing/template/public/
+skills/hugo-landing/template/resources/
+skills/hugo-landing/template/package-lock.json
+skills/hugo-landing/template/.hugo_build.lock

@@ -1,0 +1,5 @@
+{
+  "name": "hugo-landing",
+  "description": "Scaffold production-ready Hugo landing page + blog sites: Tailwind CSS, full SEO/JSON-LD, multilingual with hreflang, blog, analytics, and CI/CD for GitHub Pages, Cloudflare Pages, Netlify or AWS Amplify.",
+  "version": "0.1.0"
+}

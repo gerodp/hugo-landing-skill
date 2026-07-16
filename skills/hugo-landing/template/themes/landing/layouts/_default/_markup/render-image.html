@@ -1,0 +1,27 @@
+{{- $src := .Destination -}}
+{{- $alt := .Text | default (.Title | default "") | plainify -}}
+{{- $baseClass := "prose-image rounded-xl" -}}
+{{- $path := strings.TrimPrefix "/" $src -}}
+{{- $image := resources.Get $path -}}
+{{- $isImage := and $image (eq $image.MediaType.MainType "image") -}}
+
+{{/* Handle custom classes from markdown attributes */}}
+{{- $class := $baseClass -}}
+{{- with .Attributes.class -}}
+  {{- $class = printf "%s %s" $baseClass . -}}
+{{- end -}}
+
+<figure class="prose-figure">
+  {{- if $isImage -}}
+    {{/* Determine optimal size: use 1000x max for sharp screenshots, but don't upscale smaller images */}}
+    {{- $targetWidth := 1000 -}}
+    {{- $sizes := cond (gt $image.Width $targetWidth) (printf "%dx" $targetWidth) (printf "%dx" $image.Width) -}}
+    {{- partial "responsive-image.html" (dict "src" $path "alt" $alt "class" $class "sizes" $sizes "quality" 95) -}}
+  {{- else -}}
+    {{- warnf "render-image fallback for %q" $path -}}
+    <img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async" class="{{ $class }}">
+  {{- end -}}
+  {{- with .Title }}
+    <figcaption class="prose-image-caption text-sm text-neutral-500 mt-2 text-center">{{ . }}</figcaption>
+  {{- end }}
+</figure>

@@ -1,0 +1,21 @@
+{{- /* Returns the canonical cross-domain URL for a page.
+       Uses params.languagedomains to map languages to their serving domain,
+       and params.domaindefaultlangs to know which lang is root (no prefix) on each domain.
+       Falls back to .Permalink if cross-domain params are not configured. */ -}}
+{{- $page := . -}}
+{{- $lang := $page.Language.Lang -}}
+{{- $domains := $page.Site.Params.languagedomains -}}
+{{- $defaults := $page.Site.Params.domaindefaultlangs -}}
+{{- $url := $page.Permalink -}}
+{{- if and $domains $defaults -}}
+  {{- $targetDomain := index $domains $lang -}}
+  {{- if $targetDomain -}}
+    {{- $defaultLang := index $defaults $targetDomain -}}
+    {{- $path := $page.RelPermalink -}}
+    {{- if eq $lang $defaultLang -}}
+      {{- $path = replaceRE (printf `^/%s/` $lang) "/" $path -}}
+    {{- end -}}
+    {{- $url = printf "%s%s" $targetDomain $path -}}
+  {{- end -}}
+{{- end -}}
+{{- $url -}}

@@ -1,0 +1,131 @@
+baseURL = '__SITE_URL__'
+
+title = '__SITE_NAME__'
+theme = 'landing'
+
+defaultContentLanguage = 'en'
+defaultContentLanguageInSubdir = false
+
+# SEO Configuration
+enableRobotsTXT = true
+# Uses git commit dates for lastmod. Enable once the repo has at least one commit.
+# enableGitInfo = true
+
+disablePathToLower = false
+removePathAccents = true
+
+# Sitemap configuration
+[sitemap]
+  changefreq = 'weekly'
+  priority = 0.5
+
+# RSS configuration
+[outputFormats]
+  [outputFormats.RSS]
+    mediatype = "application/rss"
+    baseName = "feed"
+
+[outputs]
+  home = ['HTML', 'RSS']
+  section = ['HTML', 'RSS']
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.parser]
+      wrapStandAloneImageWithinParagraph = false
+      [markup.goldmark.parser.attribute]
+        block = true
+        title = true
+
+[imaging]
+  anchor = 'Smart'
+  bgColor = '#ffffff'
+  hint = 'photo'
+  quality = 85
+  resampleFilter = 'box'
+
+# Language configuration.
+# To add languages, run scripts/add-language.sh or copy this block —
+# see the hugo-landing skill's reference/multilingual.md.
+[languages]
+  [languages.en]
+    languageName = 'English'
+    contentDir = 'content/en'
+    weight = 1
+    [languages.en.menus]
+      [[languages.en.menus.main]]
+        name = 'Home'
+        pageRef = '/'
+        weight = 10
+      [[languages.en.menus.main]]
+        name = 'How I work'
+        url = '/#method'
+        weight = 20
+      [[languages.en.menus.main]]
+        name = 'Results'
+        url = '/#results'
+        weight = 30
+      [[languages.en.menus.main]]
+        name = 'About'
+        url = '/#about'
+        weight = 40
+      [[languages.en.menus.main]]
+        name = 'Blog'
+        url = '/#blog'
+        weight = 50
+      [[languages.en.menus.main]]
+        name = 'Contact'
+        url = '/#contact'
+        weight = 60
+
+[params]
+  # Brand shown in the header (falls back to the site title)
+  brandName = '__SITE_NAME__'
+  description = 'A short description of what this site offers. Used as the default meta description.'
+
+  # Default blog author (post front matter `author` overrides these)
+  author = 'Your Name'
+  # authorImage = 'images/author.jpg'          # theme asset path (themes/landing/assets/ or assets/)
+
+  contactEmail = 'hello@example.com'
+  # bookCallUrl = 'https://cal.com/your-handle/30min'   # scheduling link for the contact CTA; omit to use a mailto
+
+  # logo = 'images/logo.png'                   # static path, used in Organization JSON-LD
+  # shareImage = 'images/share.jpg'            # theme asset path, default OpenGraph/Twitter image
+  # themeColor = '#ffffff'                     # browser UI theme color
+  # googleFont = 'Inter:wght@400;500;600;700;800'   # css2 family spec
+
+  [params.social]
+    # linkedin = 'https://www.linkedin.com/in/your-handle/'
+    # github = 'https://github.com/your-handle'
+    # twitter = 'https://twitter.com/your-handle'
+
+  # Optional Person entity in JSON-LD (recommended for personal-brand sites)
+  [params.jsonld]
+    # personName = 'Your Name'
+    # jobTitle = 'Your Role'
+    # knowsAbout = ['Topic one', 'Topic two']
+
+  # Analytics (production builds only). provider: umami | plausible | ga4
+  [params.analytics]
+    # provider = 'umami'
+    # id = 'your-website-id'
+    # host = 'https://cloud.umami.is'
+
+  [params.footer]
+    servicesTitle = 'Services'
+    services = [
+      'Service one',
+      'Service two',
+      'Service three',
+    ]
+    copyright = '© All rights reserved'
+    [[params.footer.links]]
+      name = 'Privacy Policy'
+      url = '/legal/privacy/'
+
+# Floor: this theme uses the layouts structure introduced in Hugo 0.146
+[module]
+  [module.hugoVersion]
+    extended = false
+    min = '0.146.0'

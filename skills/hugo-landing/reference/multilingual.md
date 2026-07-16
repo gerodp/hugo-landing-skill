@@ -1,0 +1,169 @@
+# Multilingual setup
+
+Any set of languages is supported. The default (lowest-weight) language is
+served at `/`, others under `/<code>/`. hreflang alternates plus `x-default`
+(pointing to the default language) are emitted automatically for translated
+pages; single-language sites emit none.
+
+## Adding a language
+
+```sh
+scripts/add-language.sh --dir <site> --code <xx> --name "<Native Name>" [--weight N] [--from en]
+```
+
+The script creates `content/<xx>/` (copies of the source language to
+translate), `i18n/<xx>.toml` (stub), and appends a `[languages.<xx>]` config
+block. Then YOU translate:
+
+1. **`content/<xx>/`** — every file. Keep `translationKey` in blog posts equal
+   across languages so Hugo links them.
+2. **`i18n/<xx>.toml`** — the 9 UI strings (below).
+3. **Menu names** in the appended `[languages.<xx>.menus]` block, plus
+   language-specific params if wanted:
+
+   ```toml
+   [languages.xx.params]
+     description = '...'
+     [languages.xx.params.footer]
+       servicesTitle = '...'
+       services = ['...']
+   ```
+
+## i18n keys
+
+`readMore, previous, next, minRead, noPosts, postsAbout, allLabel,
+lastUpdated, backToHome`
+
+Ready-made translations for common languages (write others yourself — they
+are 9 short strings):
+
+```toml
+# es.toml
+[readMore]
+other = 'Leer más'
+[previous]
+other = 'Anterior'
+[next]
+other = 'Siguiente'
+[minRead]
+other = 'min de lectura'
+[noPosts]
+other = 'Aún no hay artículos.'
+[postsAbout]
+other = 'Artículos sobre'
+[allLabel]
+other = 'Todos'
+[lastUpdated]
+other = 'Última actualización:'
+[backToHome]
+other = 'Volver al inicio'
+```
+
+```toml
+# fr.toml
+[readMore]
+other = 'Lire la suite'
+[previous]
+other = 'Précédent'
+[next]
+other = 'Suivant'
+[minRead]
+other = 'min de lecture'
+[noPosts]
+other = "Pas encore d'articles."
+[postsAbout]
+other = 'Articles sur'
+[allLabel]
+other = 'Tous'
+[lastUpdated]
+other = 'Dernière mise à jour :'
+[backToHome]
+other = "Retour à l'accueil"
+```
+
+```toml
+# de.toml
+[readMore]
+other = 'Weiterlesen'
+[previous]
+other = 'Zurück'
+[next]
+other = 'Weiter'
+[minRead]
+other = 'Min. Lesezeit'
+[noPosts]
+other = 'Noch keine Artikel.'
+[postsAbout]
+other = 'Artikel über'
+[allLabel]
+other = 'Alle'
+[lastUpdated]
+other = 'Zuletzt aktualisiert:'
+[backToHome]
+other = 'Zurück zur Startseite'
+```
+
+```toml
+# it.toml
+[readMore]
+other = 'Leggi di più'
+[previous]
+other = 'Precedente'
+[next]
+other = 'Successivo'
+[minRead]
+other = 'min di lettura'
+[noPosts]
+other = 'Ancora nessun articolo.'
+[postsAbout]
+other = 'Articoli su'
+[allLabel]
+other = 'Tutti'
+[lastUpdated]
+other = 'Ultimo aggiornamento:'
+[backToHome]
+other = 'Torna alla home'
+```
+
+```toml
+# pt.toml
+[readMore]
+other = 'Ler mais'
+[previous]
+other = 'Anterior'
+[next]
+other = 'Seguinte'
+[minRead]
+other = 'min de leitura'
+[noPosts]
+other = 'Ainda não há artigos.'
+[postsAbout]
+other = 'Artigos sobre'
+[allLabel]
+other = 'Todos'
+[lastUpdated]
+other = 'Última atualização:'
+[backToHome]
+other = 'Voltar ao início'
+```
+
+## Advanced: one site, multiple domains
+
+To serve different languages from different domains (e.g. Spanish on
+`example.es`, everything else on `example.com`), set:
+
+```toml
+[params.languagedomains]
+  es = "https://example.es"
+  en = "https://example.com"
+
+[params.domaindefaultlangs]
+  "https://example.es" = "es"
+  "https://example.com" = "en"
+```
+
+Canonical URLs, hreflang and the language switcher then use the mapped
+domains (see `themes/landing/layouts/_partials/cross-domain-url.html`). You
+must build and deploy the site once per domain (e.g. one hosting project per
+domain with different `baseURL`) and configure DNS accordingly. Leave these
+params unset for the normal single-domain setup.

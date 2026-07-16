@@ -1,0 +1,63 @@
+name: Template canary
+
+# Builds the embedded template against the LATEST Hugo release so breakage
+# from new Hugo versions is caught before users hit it.
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  scaffold-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install latest Hugo
+        run: |
+          HUGO_VERSION=$(curl -fsSL https://api.github.com/repos/gohugoio/hugo/releases/latest | jq -r '.tag_name | ltrimstr("v")')
+          echo "Latest Hugo: ${HUGO_VERSION}"
+          curl -sL -o /tmp/hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i /tmp/hugo.deb
+          hugo version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Scaffold a site from the template
+        run: |
+          skills/hugo-landing/scripts/scaffold.sh \
+            --dir /tmp/canary-site --name "Canary Site" \
+            --url https://canary.example.com --deploy github-pages
+
+      - name: Add a second language (structural)
+        run: |
+          skills/hugo-landing/scripts/add-language.sh \
+            --dir /tmp/canary-site --code es --name "Español"
+
+      - name: Verify (npm install + production build + smoke test)
+        run: skills/hugo-landing/scripts/verify.sh --dir /tmp/canary-site --smoke
+
+      - name: Lint scaffolded site
+        run: cd /tmp/canary-site && npm run lint
+
+      - name: File an issue if the scheduled canary failed
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Canary failed: template no longer builds with latest Hugo';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'canary'
+            });
+            if (issues.some(i => i.title === title)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title, labels: ['canary'],
+              body: `The weekly canary build failed. See ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            });

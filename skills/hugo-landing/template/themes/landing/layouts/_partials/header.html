@@ -1,0 +1,115 @@
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 border-b border-gray-100">
+<div class="max-w-6xl mx-auto flex items-center py-3 sm:py-4 gap-3 sm:gap-4 px-4 sm:px-6">
+  <!-- Brand (always flush left) -->
+  <div class="shrink-0 text-left text-xl sm:text-2xl font-bold text-gray-900 tracking-tight leading-none">
+    <a href="{{ .Site.Home.RelPermalink }}" class="hover:text-gray-700 transition-colors">{{ site.Params.brandName | default site.Title }}</a>
+  </div>
+
+  <!-- Desktop navigation (right-aligned) -->
+  <div class="hidden md:flex flex-1 justify-end">
+    {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+  </div>
+
+  <!-- Mobile menu toggle -->
+  <div class="ml-auto md:ml-0 md:hidden">
+    <button id="mobile-menu-toggle" class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" aria-controls="mobile-menu" aria-expanded="false">
+      <!-- Hamburger icon -->
+      <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+
+  {{/* Language dropdown with text codes */}}
+  {{ if .IsTranslated }}
+
+  <div class="relative order-3 ml-1 sm:ml-2">
+      <button id="lang-toggle" class="flex items-center justify-center w-9 h-9 rounded-md border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500" aria-haspopup="menu" aria-expanded="false" aria-controls="lang-menu" aria-label="{{ $.Site.Language.LanguageName }}">
+        {{ $.Site.Language.Lang | upper }}
+      </button>
+      <div id="lang-menu" role="menu" aria-label="Language" class="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-md py-1 hidden z-50">
+        {{ range .AllTranslations }}
+          {{ $t := . }}
+          {{ if eq $t.Language.Lang $.Site.Language.Lang }}
+            <span class="flex items-center gap-2 px-3 py-2 text-gray-700 cursor-default" aria-current="true">
+              <span class="text-xs font-semibold">{{ $t.Language.Lang | upper }}</span>
+              <span class="text-xs text-gray-400">{{ $t.Language.LanguageName }}</span>
+            </span>
+          {{ else }}
+            <a href="{{ partial "cross-domain-url.html" $t }}" class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-gray-700" role="menuitem">
+              <span class="text-xs font-semibold">{{ $t.Language.Lang | upper }}</span>
+              <span class="text-xs text-gray-400">{{ $t.Language.LanguageName }}</span>
+            </a>
+          {{ end }}
+        {{ end }}
+      </div>
+    </div>
+
+  {{ end }}
+</div>
+
+  <!-- Mobile navigation panel -->
+  <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 shadow-md">
+    <div class="px-4 pt-2 pb-4">
+      {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+    </div>
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Language dropdown toggle
+    const langBtn = document.getElementById('lang-toggle');
+    const langMenu = document.getElementById('lang-menu');
+    function closeLang() {
+      if (!langMenu || !langBtn) return;
+      langMenu.classList.add('hidden');
+      langBtn.setAttribute('aria-expanded', 'false');
+    }
+    if (langBtn && langMenu) {
+      langBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const willOpen = langMenu.classList.contains('hidden');
+        langMenu.classList.toggle('hidden');
+        langBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      });
+    }
+
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    function closeMobile() {
+      if (!mobileMenu || !mobileBtn) return;
+      mobileMenu.classList.add('hidden');
+      mobileBtn.setAttribute('aria-expanded', 'false');
+    }
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const willOpen = mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden');
+        mobileBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      });
+    }
+
+    // Close only when clicking outside menus
+    document.addEventListener('click', function (e) {
+      if (langMenu && !langMenu.classList.contains('hidden')) {
+        if (!(langMenu.contains(e.target) || (langBtn && langBtn.contains(e.target)))) {
+          closeLang();
+        }
+      }
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        if (!(mobileMenu.contains(e.target) || (mobileBtn && mobileBtn.contains(e.target)))) {
+          closeMobile();
+        }
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeLang();
+        closeMobile();
+      }
+    });
+  });
+</script>
+</header>

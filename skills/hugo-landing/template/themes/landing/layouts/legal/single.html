@@ -1,0 +1,39 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "main" }}
+<main class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-4xl mx-auto px-4">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 p-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ .Title }}</h1>
+      {{ if .Date }}
+        <div class="flex items-center text-sm text-gray-500 mb-4">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span>{{ i18n "lastUpdated" | default "Last updated:" }} {{ .Date | time.Format ":date_long" }}</span>
+        </div>
+      {{ end }}
+    </div>
+
+    <!-- Content -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div class="prose prose-lg max-w-none">
+        {{ .Content }}
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-8 flex justify-center">
+      <a href="{{ .Site.Home.RelPermalink }}" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        {{ i18n "backToHome" | default "Back to home" }}
+      </a>
+    </div>
+  </div>
+</main>
+{{ end }}
+
+

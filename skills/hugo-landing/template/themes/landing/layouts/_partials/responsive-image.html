@@ -1,0 +1,64 @@
+{{/* 
+  Responsive Image Partial with WebP/JPEG Support
+  
+  Usage:
+  {{ partial "responsive-image.html" (dict 
+    "src" "images/blog/my-post/cover.jpg"
+    "alt" "Alt text"
+    "sizes" "800x"
+    "quality" 80
+    "class" "additional-css-classes"
+  ) }}
+  
+  Parameters:
+  - src: Path relative to assets/ folder (required)
+  - alt: Alt text for accessibility (required)
+  - sizes: Image resize specification, e.g. "800x", "400x300" (default: "1200x")
+  - quality: WebP quality 1-100 (default: 95)
+  - class: Additional CSS classes (optional)
+*/}}
+
+{{- $src := .src -}}
+{{- $alt := .alt | default "" -}}
+{{- $sizes := .sizes | default "1200x" -}}
+{{- $quality := .quality | default 90 -}}
+{{- $class := .class | default "" -}}
+
+{{- $image := resources.Get $src -}}
+{{- if $image -}}
+  {{/* Detect if this is likely a screenshot/UI image */}}
+  {{- $isScreenshot := or (eq $image.MediaType.SubType "png") (strings.Contains $src "screenshot") (strings.Contains $src "page_speed") -}}
+  
+  {{/* Generate optimized versions */}}
+  {{- $webp := "" -}}
+  {{- $jpg := "" -}}
+  {{- if $isScreenshot -}}
+    {{/* For screenshots: use WebP lossless + JPEG fallback */}}
+    {{- $webp = $image.Resize (printf "%s webp q100 drawing MitchellNetravali" $sizes) -}}
+    {{- $jpg = $image.Resize (printf "%s jpg q%d" $sizes (add $quality 5)) -}}
+  {{- else -}}
+    {{/* For photos: use WebP lossy + JPEG */}}
+    {{- $webp = $image.Resize (printf "%s webp q%d" $sizes $quality) -}}
+    {{- $jpg = $image.Resize (printf "%s jpg q%d" $sizes (add $quality 5)) -}}
+  {{- end -}}
+  
+  {{- $width := $jpg.Width -}}
+  {{- $height := $jpg.Height -}}
+  
+  <picture>
+    <source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+    <img src="{{ $jpg.RelPermalink }}" 
+         width="{{ $width }}"
+         height="{{ $height }}"
+         alt="{{ $alt }}" 
+         loading="lazy"
+         decoding="async"
+         {{ with $class }}class="{{ . }}"{{ end }}>
+  </picture>
+{{- else -}}
+  {{/* Fallback to original src if Hugo processing fails */}}
+  <img src="{{ $src | relURL }}" 
+       alt="{{ $alt }}" 
+       loading="lazy"
+       {{ with $class }}class="{{ . }}"{{ end }}>
+{{- end -}}

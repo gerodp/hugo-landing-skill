@@ -1,0 +1,28 @@
+{
+  "name": "__PACKAGE_NAME__",
+  "version": "1.0.0",
+  "description": "Hugo landing page + blog",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+    "lint:js": "eslint themes/landing/assets/js/*.js *.js --no-warn-ignored",
+    "lint:css": "stylelint \"themes/**/*.css\"",
+    "lint:html": "htmlhint \"themes/**/*.html\" \"layouts/**/*.html\"",
+    "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix"
+  },
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "eslint": "^9.38.0",
+    "htmlhint": "^1.7.1",
+    "stylelint": "^16.25.0",
+    "stylelint-config-standard": "^39.0.1"
+  }
+}

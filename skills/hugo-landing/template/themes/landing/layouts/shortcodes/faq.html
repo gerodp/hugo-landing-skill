@@ -1,0 +1,16 @@
+{{- $items := transform.Unmarshal .Inner -}}
+<div class="sc-faq">
+  {{- range $items }}
+  <details class="sc-faq-item">
+    <summary>{{ .q }}</summary>
+    <div class="sc-faq-answer">{{ .a | markdownify }}</div>
+  </details>
+  {{- end }}
+</div>
+{{- $mainEntity := slice }}
+{{- range $items }}
+{{- $mainEntity = $mainEntity | append (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a)) }}
+{{- end }}
+<script type="application/ld+json">
+{{ (dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" $mainEntity) | jsonify (dict "indent" "  ") | safeJS }}
+</script>

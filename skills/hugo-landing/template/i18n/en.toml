@@ -1,0 +1,26 @@
+[readMore]
+other = 'Read more'
+
+[previous]
+other = 'Previous'
+
+[next]
+other = 'Next'
+
+[minRead]
+other = 'min read'
+
+[noPosts]
+other = 'No articles here yet.'
+
+[postsAbout]
+other = 'Posts about'
+
+[allLabel]
+other = 'All'
+
+[lastUpdated]
+other = 'Last updated:'
+
+[backToHome]
+other = 'Back to home'

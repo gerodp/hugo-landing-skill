@@ -1,0 +1,13 @@
+{
+  "name": "hugo-landing-skill",
+  "owner": {
+    "name": "hugo-landing-skill maintainers"
+  },
+  "plugins": [
+    {
+      "name": "hugo-landing",
+      "source": "./",
+      "description": "Scaffold production-ready Hugo landing page + blog sites with Tailwind, SEO/JSON-LD, multilingual support and CI/CD."
+    }
+  ]
+}

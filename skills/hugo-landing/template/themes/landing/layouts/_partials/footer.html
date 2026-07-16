@@ -1,0 +1,55 @@
+<!-- Footer Content -->
+<div class="bg-black text-white py-12">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid gap-10 md:grid-cols-3 pb-10">
+      <!-- Brand + contact -->
+      <div>
+        <p class="text-lg font-bold mb-4">{{ site.Title }}</p>
+        {{ with .Site.Params.contactEmail }}
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <a href="mailto:{{ . }}" class="text-gray-300 hover:text-white transition-colors">
+            {{ . }}
+          </a>
+        </div>
+        {{ end }}
+      </div>
+
+      <!-- Services -->
+      {{ if .Site.Params.footer.services }}
+      <div>
+        {{ with .Site.Params.footer.servicesTitle }}
+        <p class="text-sm font-semibold uppercase tracking-widest text-primary-400 mb-4">{{ . }}</p>
+        {{ end }}
+        <ul class="space-y-2">
+          {{ range .Site.Params.footer.services }}
+          <li class="text-gray-300">{{ . }}</li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
+
+      <!-- Footer links (legal pages, etc.) -->
+      {{ with .Site.Params.footer.links }}
+      <div>
+        <ul class="space-y-2">
+          {{ range . }}
+          <li>
+            <a href="{{ .url | default "#" }}" class="text-gray-300 hover:text-white transition-colors">
+              {{ .name }}
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
+    </div>
+
+    <!-- Copyright -->
+    <div class="border-t border-white/10 pt-6 text-sm text-gray-400">
+      {{ .Site.Params.footer.copyright | default (printf "© All Rights Reserved %d" now.Year) }}
+    </div>
+  </div>
+</div>

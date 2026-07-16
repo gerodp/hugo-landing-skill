@@ -1,0 +1,68 @@
+{{ define "main" }}
+<section class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-5 sm:px-6">
+    <!-- Term Header -->
+    <header class="mb-12">
+      <h1 class="section-title">{{ i18n "postsAbout" | default "Posts about" }} {{ .Title }}</h1>
+      {{ with .Content }}
+      <div class="mt-4 text-lg text-slate-600 leading-relaxed max-w-2xl">
+        {{ . }}
+      </div>
+      {{ end }}
+      {{ $blogPage := .Site.GetPage "blog" }}
+      {{ with $blogPage.Params.blogTags }}
+      <div class="flex flex-wrap gap-2 mt-6">
+        <a href="{{ "blog" | relLangURL }}"
+           class="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 hover:border-primary-700 hover:text-primary-700 transition-colors">{{ i18n "allLabel" | default "All" }}</a>
+        {{ range . }}
+        {{ $href := printf "tags/%s/" .tag | relLangURL }}
+        {{ if eq $href $.RelPermalink }}
+        <span aria-current="page" class="rounded-full border border-primary-700 bg-primary-700 px-4 py-1.5 text-sm font-semibold text-white">{{ .name }}</span>
+        {{ else }}
+        <a href="{{ $href }}"
+           class="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 hover:border-primary-700 hover:text-primary-700 transition-colors">{{ .name }}</a>
+        {{ end }}
+        {{ end }}
+      </div>
+      {{ end }}
+    </header>
+
+    <!-- Posts (single column) -->
+    {{ $paginator := .Paginate .Pages 9 }}
+    {{ if $paginator.Pages }}
+    <div class="space-y-5 max-w-4xl mb-12">
+      {{ range $paginator.Pages }}
+        {{ partial "post-card-small.html" . }}
+      {{ end }}
+    </div>
+    {{ else }}
+    <p class="text-slate-500">{{ i18n "noPosts" | default "No articles here yet." }}</p>
+    {{ end }}
+
+    <!-- Pagination -->
+    {{ if gt $paginator.TotalPages 1 }}
+      <nav class="flex justify-center items-center gap-2 py-8" aria-label="Pagination">
+        {{ if $paginator.HasPrev }}
+          <a href="{{ $paginator.Prev.URL }}" class="px-5 py-2 rounded-full border border-slate-300 text-slate-700 font-semibold hover:border-primary-700 hover:text-primary-700 transition-colors">
+            ← {{ i18n "previous" | default "Previous" }}
+          </a>
+        {{ end }}
+
+        {{ range $paginator.Pagers }}
+          {{ if eq . $paginator }}
+            <span class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary-700 text-white font-semibold">{{ .PageNumber }}</span>
+          {{ else }}
+            <a href="{{ .URL }}" class="w-10 h-10 inline-flex items-center justify-center rounded-full border border-slate-200 text-slate-600 font-semibold hover:border-primary-700 hover:text-primary-700 transition-colors">{{ .PageNumber }}</a>
+          {{ end }}
+        {{ end }}
+
+        {{ if $paginator.HasNext }}
+          <a href="{{ $paginator.Next.URL }}" class="px-5 py-2 rounded-full border border-slate-300 text-slate-700 font-semibold hover:border-primary-700 hover:text-primary-700 transition-colors">
+            {{ i18n "next" | default "Next" }} →
+          </a>
+        {{ end }}
+      </nav>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
