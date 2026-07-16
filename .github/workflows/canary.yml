@@ -48,7 +48,7 @@ jobs:
 
       - name: File an issue if the scheduled canary failed
         if: failure() && github.event_name == 'schedule'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = 'Canary failed: template no longer builds with latest Hugo';
