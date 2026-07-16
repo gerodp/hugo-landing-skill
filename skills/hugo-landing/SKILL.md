@@ -142,7 +142,16 @@ may enable `enableGitInfo = true` in hugo.toml for git-based lastmod dates.
 
 Tell the user:
 
-- How to run it: `make run` (dev server), `make build`, `make new-post`.
+- How to run it — give the exact command for their site:
+
+  ```sh
+  cd <target-dir> && make run   # dev server at http://localhost:1313
+  ```
+
+  (plus `make build`, `make new-post`). Then ASK whether they want you to
+  start the dev server now. If yes, run `make run` (or
+  `hugo server --buildDrafts`) as a background process, wait for it to be
+  ready, and tell them the URL to open. Leave it running for them.
 - Deploy setup steps for their target — see `reference/deploy.md` (e.g. for
   GitHub Pages: push to GitHub, then Settings → Pages → Source: GitHub Actions).
 - Where to customize further (content model doc, params).
