@@ -15,6 +15,14 @@
       }
     ],
     "no-descending-specificity": null,
+    "declaration-property-value-no-unknown": [
+      true,
+      {
+        "ignoreProperties": {
+          "/.+/": "/theme\\(/"
+        }
+      }
+    ],
     "no-duplicate-selectors": null,
     "selector-class-pattern": null,
     "custom-property-pattern": null,

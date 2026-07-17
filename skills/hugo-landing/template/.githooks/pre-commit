@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Tracked pre-commit hook. Active because scaffold.sh runs
+# `git config core.hooksPath .githooks` — after a fresh clone, re-run that
+# command once to re-enable it (nothing is copied into .git/hooks/).
+# Runs the same lint + build checks as CI so regressions are caught before
+# a push instead of by GitHub Actions. Skip in an emergency with --no-verify.
+set -euo pipefail
+
+if [[ ! -d node_modules ]]; then
+  echo "pre-commit: node_modules/ not found — run \`npm install\` first" >&2
+  exit 1
+fi
+
+echo "pre-commit: npm run lint"
+if ! npm run lint; then
+  echo "pre-commit: lint failed — commit aborted (fix the issues above)" >&2
+  exit 1
+fi
+
+echo "pre-commit: hugo build check"
+BUILD_OUT=$(mktemp -d)
+trap 'rm -rf "$BUILD_OUT"' EXIT
+if ! hugo --gc --minify --destination "$BUILD_OUT" --quiet; then
+  echo "pre-commit: hugo build failed — commit aborted" >&2
+  exit 1
+fi
+
+echo "pre-commit: ok"

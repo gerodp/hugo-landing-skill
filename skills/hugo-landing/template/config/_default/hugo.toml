@@ -93,7 +93,7 @@ removePathAccents = true
   # logo = 'images/logo.png'                   # static path, used in Organization JSON-LD
   # shareImage = 'images/share.jpg'            # theme asset path, default OpenGraph/Twitter image
   # themeColor = '#ffffff'                     # browser UI theme color
-  # googleFont = 'Inter:wght@400;500;600;700;800'   # css2 family spec
+  googleFont = 'Inter:wght@400;500;600;700;800'   # css2 family spec; remove to load no webfont (system fonts only)
 
   [params.social]
     # linkedin = 'https://www.linkedin.com/in/your-handle/'

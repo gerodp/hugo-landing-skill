@@ -7,18 +7,22 @@ usage() {
   cat <<'EOF'
 Usage: scaffold.sh --dir <target-dir> --name <site-name> --url <https://example.com/> \
                    --deploy <github-pages|netlify|cloudflare|amplify> \
-                   [--hugo-version X.Y.Z] [--package-name <npm-name>]
+                   [--hugo-version X.Y.Z] [--package-name <npm-name>] [--no-blog]
 
 Copies the template into <target-dir>, substitutes __SITE_NAME__/__SITE_URL__/
 __PACKAGE_NAME__/__HUGO_VERSION__ tokens, installs the chosen deploy target's
 config, and runs git init. Refuses to write into a non-empty directory.
+
+--no-blog: ship no blog at all — removes the blog content, archetype, blog
+layouts and tag pages, the Blog menu entry, the homepage blog params, and the
+blog make targets.
 EOF
 }
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 TEMPLATE_DIR="$SCRIPT_DIR/../template"
 
-TARGET="" NAME="" URL="" DEPLOY="" HUGO_VERSION="" PACKAGE_NAME=""
+TARGET="" NAME="" URL="" DEPLOY="" HUGO_VERSION="" PACKAGE_NAME="" NO_BLOG=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dir) TARGET="$2"; shift 2 ;;
@@ -27,6 +31,7 @@ while [[ $# -gt 0 ]]; do
     --deploy) DEPLOY="$2"; shift 2 ;;
     --hugo-version) HUGO_VERSION="$2"; shift 2 ;;
     --package-name) PACKAGE_NAME="$2"; shift 2 ;;
+    --no-blog) NO_BLOG=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown argument: $1" >&2; usage; exit 1 ;;
   esac
@@ -68,6 +73,26 @@ echo "==> Installing deploy target: $DEPLOY"
 (cd "$TARGET/deploy/$DEPLOY" && tar cf - .) | (cd "$TARGET" && tar xf -)
 rm -rf "$TARGET/deploy"
 
+if [[ "$NO_BLOG" == "1" ]]; then
+  echo "==> Removing blog (--no-blog)"
+  rm -rf "$TARGET/content/en/blog" \
+         "$TARGET/archetypes/blog.md" \
+         "$TARGET/themes/landing/layouts/blog" \
+         "$TARGET/themes/landing/layouts/taxonomy.html" \
+         "$TARGET/themes/landing/layouts/term.html"
+  # No tag pages without a blog
+  perl -pi -e "s/^theme = 'landing'\$/theme = 'landing'\ndisableKinds = ['taxonomy', 'term']/" \
+    "$TARGET/config/_default/hugo.toml"
+  # Drop the Blog menu entry
+  perl -0pi -e "s/[ \t]*\[\[languages\.en\.menus\.main\]\]\n[ \t]*name = 'Blog'\n[ \t]*url = '\/#blog'\n[ \t]*weight = \d+\n//" \
+    "$TARGET/config/_default/hugo.toml"
+  # Drop the homepage blog section params
+  perl -0pi -e "s/# === BLOG ===.*?(?=# === )//s" "$TARGET/content/en/_index.md"
+  # Drop the blog make targets and their help lines
+  perl -0pi -e "s/new-post:\n\thugo new content [^\n]*\n\n//; s/publish:\n\tfind content [^\n]*\n\n//; s/[ \t]*\@echo \"  make (new-post|publish)[^\n]*\n//g; s/new-post publish //" \
+    "$TARGET/Makefile"
+fi
+
 echo "==> Substituting tokens (hugo: $HUGO_VERSION, package: $PACKAGE_NAME)"
 export SUB_NAME="$NAME" SUB_URL="$URL" SUB_PKG="$PACKAGE_NAME" SUB_HUGO="$HUGO_VERSION"
 grep -rl -e '__SITE_NAME__' -e '__SITE_URL__' -e '__PACKAGE_NAME__' -e '__HUGO_VERSION__' "$TARGET" \
@@ -84,6 +109,9 @@ if [[ ! -d "$TARGET/.git" ]]; then
   echo "==> Initializing git repository"
   git -C "$TARGET" init -q
 fi
+# Activate the tracked pre-commit hook (lint + build before every commit)
+git -C "$TARGET" config core.hooksPath .githooks
+chmod +x "$TARGET/.githooks/pre-commit"
 
 cat <<EOF
 

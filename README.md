@@ -1,5 +1,7 @@
 # hugo-landing — a Claude Code skill for scaffolding Hugo landing pages
 
+🌐 Project website: [hugolanding.com](https://hugolanding.com)
+
 A [Claude Code](https://claude.com/claude-code) plugin that scaffolds
 production-ready **Hugo landing page + blog** sites in minutes:
 

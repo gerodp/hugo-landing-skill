@@ -12,7 +12,8 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `heroTitle` | Main headline (falls back to `title`) |
 | `heroSubtitle` | Supporting paragraph |
 | `heroButton`, `heroButtonLink` | Primary CTA; link can be `#contact` or external |
-| `heroSecondaryCta` | Optional link to `#results` (only if case studies exist) |
+| `heroSecondaryCta` | Secondary link to `#results`; rendered in both hero layouts, but only when case studies exist |
+| `heroBadge` | Small caption under the CTA row (e.g. "No credit card required"); markdown ok |
 | `heroName`, `heroRole`, `heroBio` | Right-hand personal panel; without `heroName` the hero falls back to a simpler centered layout |
 
 ### Pain points (`#problems`)
@@ -24,12 +25,13 @@ remove that section. TOML rule: all scalars ABOVE the `[[array]]` tables.
 | `problemsItems[]` | Flat list alternative to groups |
 | `problemsOutro`, `problemsOutroCta` | Closing paragraph + link to `#method` |
 
-### Features grid (`#features`)
+### Features (`#features`)
 
 | Param | Notes |
 |---|---|
 | `featuresTitle` | Section heading |
-| `[[features]]` with `icon`, `title`, `description` | 3–6 cards; `icon` is an emoji (optional) |
+| `[[features]]` with `icon`, `title`, `description` | 3–6 entries; `icon` is an emoji (optional) |
+| `featuresLayout` | `grid` (default, cards) or `list` (divided rows — reads better for longer descriptions) |
 
 ### Method / steps (`#method`)
 

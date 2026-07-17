@@ -36,17 +36,19 @@ Ask (AskUserQuestion works well; skip anything already stated):
    supported — see `reference/multilingual.md`.
 4. **Brand color + font**: any Tailwind palette name or a custom color;
    Google Font family (default Inter).
-5. **Homepage sections**: which of pain-points, features grid, method/steps,
+5. **Homepage sections**: which of pain-points, features, method/steps,
    stats band, case studies, testimonials, pricing, about, team, blog preview,
    open-source, FAQ, newsletter, final CTA to include. Hero is always on.
    Suggest a sensible subset for the site type (consultant: pain-points,
    method, case studies, about, FAQ; product: features, stats, testimonials,
    pricing, FAQ) rather than enabling everything.
-6. **Deploy target**: github-pages (default) / cloudflare / netlify / amplify.
-7. **Analytics**: umami / plausible / ga4 / none, plus website ID and
+6. **Blog**: include one? (default yes). If no, scaffold with `--no-blog` —
+   the site then ships without any blog files.
+7. **Deploy target**: github-pages (default) / cloudflare / netlify / amplify.
+8. **Analytics**: umami / plausible / ga4 / none, plus website ID and
    (self-hosted) script host.
-8. **Contact CTA**: scheduling link (Cal.com/Calendly) or email.
-9. **Copy**: does the user want to provide the copy themselves, or should
+9. **Contact CTA**: scheduling link (Cal.com/Calendly) or email.
+10. **Copy**: does the user want to provide the copy themselves, or should
    you draft it? If they provide it, ask them to paste it (or point to a
    source: existing site, bio, pitch deck) — it should cover the sections
    selected in question 5.
@@ -55,13 +57,23 @@ Ask (AskUserQuestion works well; skip anything already stated):
 
 ```sh
 scripts/scaffold.sh --dir <target> --name "<Site Name>" \
-  --url <base-url> --deploy <target>
+  --url <base-url> --deploy <target> [--no-blog]
 ```
 
 This copies the template, substitutes `__SITE_NAME__` / `__SITE_URL__` /
 `__PACKAGE_NAME__` / `__HUGO_VERSION__` (Hugo version auto-resolved from the
 local install or the latest GitHub release), installs the deploy target's
 config, and runs `git init`. It refuses non-empty target directories.
+
+With `--no-blog` (user said no blog in question 6) the scaffold ships no
+blog files at all: blog content, archetype, blog/tag layouts, the Blog menu
+entry, the homepage blog params and the blog make targets are all removed.
+
+It also activates the tracked pre-commit hook (`.githooks/pre-commit`, via
+`git config core.hooksPath .githooks`), which runs `npm run lint` plus a
+Hugo build before every commit — the same checks as CI, so regressions
+surface locally instead of in GitHub Actions. After a fresh clone of the
+site's repo, that one `git config` command re-enables it.
 
 ### 3. Write the content (judgment)
 
@@ -93,8 +105,8 @@ Also update in `config/_default/hugo.toml`:
 - `params.footer.*` (services list, links, copyright)
 - The menu entries, matching the sections that exist
 
-Replace the example blog post and legal page with real or clearly-placeholder
-content per the user's preference. Keep the TOML rule from the template:
+Replace the example blog post (unless scaffolded with `--no-blog`) and legal
+page with real or clearly-placeholder content per the user's preference. Keep the TOML rule from the template:
 **scalar params above `[[array]]` tables** in `_index.md`.
 
 ### 4. Extra languages (script + judgment)
@@ -120,12 +132,19 @@ a shared `translationKey`.
 
 ### 5. Branding
 
-- **Color**: in `tailwind.config.js`, set `primary` to a Tailwind palette
-  (`colors.emerald`, `colors.rose`, …) or a custom 50–900 scale. The whole
-  theme (utilities and CSS in `themes/landing/assets/css/main.css` via
-  `theme()` tokens) follows automatically.
+- **Accent color**: in `tailwind.config.js`, set `primary` to a Tailwind
+  palette (`colors.emerald`, `colors.rose`, …) or a custom 50–900 scale.
+  This swaps the ACCENT color everywhere (utilities and `theme()` tokens in
+  `themes/landing/assets/css/main.css`) — it does not change backgrounds or
+  text colors.
+- **Dark or non-light theme**: component backgrounds/text/borders read the
+  CSS custom properties in main.css's `:root` block, but layouts also use
+  hardcoded light Tailwind utilities. Follow `reference/dark-theme.md` — it
+  has a ready-made override block and the complete utility remap list; do
+  not rediscover the remaps by grepping.
 - **Font**: set `params.googleFont` in hugo.toml (css2 family spec) AND the
-  matching family name in `tailwind.config.js` `fontFamily.sans`.
+  matching family name in `tailwind.config.js` `fontFamily.sans`. Remove
+  `params.googleFont` entirely to load no webfont (system font stack).
 - **Favicon**: `static/favicon.svg` is a placeholder — update its letter/color
   minimum, or generate a real set (e.g. realfavicongenerator.net) and extend
   the icon links in `themes/landing/layouts/_partials/head.html`.
@@ -140,8 +159,9 @@ scripts/verify.sh --dir <target> --smoke
 ```
 
 Runs token check, translation-parity check (every page and i18n file must
-exist and be translated in every language), `npm install`,
-`hugo --gc --minify`, and a dev-server curl.
+exist and be translated in every language), `npm install`, `npm run lint`
+(same as CI), `hugo --gc --minify`, and a dev-server curl against the
+baseURL's path (subpath-aware for GitHub Pages project sites).
 **Treat any Hugo WARN/deprecation output as actionable: fix it now**, so the
 site is clean against the Hugo version it will build with. Then make the
 initial commit yourself (verify.sh doesn't commit). After the first commit you
@@ -157,7 +177,7 @@ Tell the user:
   cd <target-dir> && make run   # dev server at http://localhost:1313
   ```
 
-  (plus `make build`, `make new-post`). Then ASK whether they want you to
+  (plus `make build`, and `make new-post` unless `--no-blog`). Then ASK whether they want you to
   start the dev server now. If yes, run `make run` (or
   `hugo server --buildDrafts`) as a background process, wait for it to be
   ready, and tell them the URL to open. Leave it running for them.

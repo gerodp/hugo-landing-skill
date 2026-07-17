@@ -1,15 +1,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="manifest" href="{{ "site.webmanifest" | relURL }}">
 <meta name="theme-color" content="{{ site.Params.themeColor | default "#ffffff" }}">
 
-{{/* Typography: Google Font, configurable via params.googleFont (family spec of a css2 URL) */}}
-{{ $font := site.Params.googleFont | default "Inter:wght@400;500;600;700;800" }}
+{{/* Typography: Google Font, only when params.googleFont is set (family spec of a css2 URL) */}}
+{{ with site.Params.googleFont }}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family={{ $font | safeURL }}&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family={{ . | safeURL }}&display=swap" rel="stylesheet">
+{{ end }}
 
 {{/* SEO Title */}}
 <title>{{ if .IsHome }}{{ .Title | default .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>

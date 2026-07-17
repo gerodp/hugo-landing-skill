@@ -52,6 +52,14 @@ echo "==> Creating i18n/$CODE.toml (copy of $FROM strings — translate the valu
 cp "$DIR/i18n/$FROM.toml" "$DIR/i18n/$CODE.toml"
 
 echo "==> Appending [languages.$CODE] block to config (translate the menu names)"
+BLOG_MENU=""
+if [[ -d "$DIR/content/$FROM/blog" ]]; then
+  BLOG_MENU="    [[languages.$CODE.menus.main]]
+      name = 'Blog'
+      url = '/#blog'
+      weight = 50
+"
+fi
 cat >> "$CONFIG" <<EOF
 
 # --- added by add-language.sh: translate menu names below ---
@@ -76,11 +84,7 @@ cat >> "$CONFIG" <<EOF
       name = 'About'
       url = '/#about'
       weight = 40
-    [[languages.$CODE.menus.main]]
-      name = 'Blog'
-      url = '/#blog'
-      weight = 50
-    [[languages.$CODE.menus.main]]
+${BLOG_MENU}    [[languages.$CODE.menus.main]]
       name = 'Contact'
       url = '/#contact'
       weight = 60

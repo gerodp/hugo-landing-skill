@@ -85,6 +85,9 @@ if [[ "$LANG_COUNT" -gt 1 ]]; then echo "    ok ($LANG_COUNT languages in sync)"
 echo "==> Installing Node dependencies"
 if [[ -f package-lock.json ]]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
 
+echo "==> Linting (npm run lint — same as CI)"
+npm run lint
+
 echo "==> Production build (hugo --gc --minify)"
 BUILD_LOG=$(mktemp)
 if ! hugo --gc --minify 2>&1 | tee "$BUILD_LOG"; then
@@ -98,14 +101,19 @@ fi
 if [[ "$SMOKE" == "1" ]]; then
   echo "==> Smoke test: hugo server"
   PORT=1414
+  # GitHub Pages project sites serve under a subpath — curl the baseURL path,
+  # not always /
+  BASE_PATH=$(sed -n "s/^baseURL *= *['\"]https\{0,1\}:\/\/[^/'\"]*\(\/[^'\"]*\)['\"].*/\1/p" config/_default/hugo.toml | head -1)
+  BASE_PATH=${BASE_PATH:-/}
+  [[ "$BASE_PATH" == */ ]] || BASE_PATH="${BASE_PATH}/"
   hugo server --port "$PORT" --renderToMemory >/dev/null 2>&1 &
   SERVER_PID=$!
   trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
   for _ in $(seq 1 20); do
     sleep 0.5
-    if curl -sf "http://localhost:$PORT/" >/dev/null; then break; fi
+    if curl -sf "http://localhost:$PORT$BASE_PATH" >/dev/null; then break; fi
   done
-  curl -sf "http://localhost:$PORT/" | grep -qi '<html' || { echo "error: homepage did not render" >&2; exit 1; }
+  curl -sf "http://localhost:$PORT$BASE_PATH" | grep -qi '<html' || { echo "error: homepage did not render at $BASE_PATH" >&2; exit 1; }
   kill "$SERVER_PID" 2>/dev/null || true
   trap - EXIT
   echo "    homepage responds"

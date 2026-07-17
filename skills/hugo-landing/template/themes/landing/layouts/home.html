@@ -31,6 +31,9 @@
           </a>
           {{ end }}
         </div>
+        {{ with .Params.heroBadge }}
+        <p class="mt-4 text-sm text-slate-500">{{ . | markdownify }}</p>
+        {{ end }}
       </div>
 
       <aside class="md:col-span-5 md:border-l md:border-slate-200 md:pl-10 lg:pl-12">
@@ -52,11 +55,22 @@
     <div class="hero-subtitle text-lg md:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed whitespace-pre-line">
       {{ .Params.heroSubtitle | default "" }}
     </div>
-    {{ if .Params.heroButton }}
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+      {{ if .Params.heroButton }}
       <a href="{{ .Params.heroButtonLink }}"
+         {{ if and .Params.heroButtonLink (hasPrefix .Params.heroButtonLink "http") }}target="_blank" rel="noopener noreferrer"{{ end }}
          class="hero-cta inline-block bg-primary-700 text-white px-8 py-4 rounded-lg font-semibold text-base hover:bg-primary-800 transition-colors">
         {{ .Params.heroButton }}
       </a>
+      {{ end }}
+      {{ if and .Params.caseStudies .Params.heroSecondaryCta }}
+      <a href="#results" class="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-slate-700 hover:text-primary-700 transition-colors">
+        {{ .Params.heroSecondaryCta }}
+      </a>
+      {{ end }}
+    </div>
+    {{ with .Params.heroBadge }}
+    <p class="mt-4 text-sm text-slate-500">{{ . | markdownify }}</p>
     {{ end }}
   </div>
   {{ end }}
@@ -103,7 +117,7 @@
     {{ end }}
     {{ with $.Params.problemsOutro }}
     <div class="mt-10 max-w-4xl">
-      <p class="text-lg text-slate-700 leading-relaxed">{{ . | markdownify }}</p>
+      <div class="text-lg text-slate-700 leading-relaxed">{{ . | markdownify }}</div>
       {{ with $.Params.problemsOutroCta }}
       <a href="#method" class="mt-5 hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-900 transition-colors">
         {{ . }} <span aria-hidden="true">→</span>
@@ -124,6 +138,22 @@
       <h2 class="section-title mt-4">{{ . }}</h2>
       {{ end }}
     </header>
+    {{ if eq (.Params.featuresLayout | default "grid") "list" }}
+    {{/* Divided list — reads better than cards for longer descriptions */}}
+    <div class="max-w-4xl divide-y divide-slate-200">
+      {{ range .Params.features }}
+      <div class="feature-row flex items-start gap-5 py-6 first:pt-0 last:pb-0">
+        {{ with .icon }}
+        <div class="w-10 h-10 shrink-0 rounded-full bg-primary-50 text-xl flex items-center justify-center" aria-hidden="true">{{ . }}</div>
+        {{ end }}
+        <div>
+          <h3 class="font-bold text-lg text-slate-900">{{ .title }}</h3>
+          <div class="mt-2 text-slate-600 leading-relaxed">{{ .description | markdownify }}</div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+    {{ else }}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {{ range .Params.features }}
       <div class="feature-card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
@@ -131,10 +161,11 @@
         <div class="w-10 h-10 rounded-full bg-primary-50 text-xl flex items-center justify-center mb-4" aria-hidden="true">{{ . }}</div>
         {{ end }}
         <h3 class="font-bold text-lg text-slate-900">{{ .title }}</h3>
-        <p class="mt-2 text-slate-600 leading-relaxed">{{ .description | markdownify }}</p>
+        <div class="mt-2 text-slate-600 leading-relaxed">{{ .description | markdownify }}</div>
       </div>
       {{ end }}
     </div>
+    {{ end }}
   </div>
 </section>
 {{ end }}
@@ -161,7 +192,7 @@
               <span class="text-sm font-semibold text-primary-700">{{ . }}</span>
               {{ end }}
             </div>
-            <p class="mt-2 text-slate-600 leading-relaxed">{{ .description | markdownify }}</p>
+            <div class="mt-2 text-slate-600 leading-relaxed">{{ .description | markdownify }}</div>
           </div>
         </div>
         {{ end }}
@@ -239,7 +270,7 @@
       <article class="case-card">
         <h3 class="font-bold text-xl text-white mb-3">{{ .title | markdownify }}</h3>
         {{ with .context }}
-        <p class="text-sm text-slate-400 mb-6 leading-relaxed">{{ . | markdownify }}</p>
+        <div class="text-sm text-slate-400 mb-6 leading-relaxed">{{ . | markdownify }}</div>
         {{ end }}
         {{ with .bullets }}
         <ul class="space-y-2 mb-6">
@@ -255,7 +286,7 @@
         {{ end }}
         <div class="case-result">
           <p class="text-xs font-semibold uppercase tracking-widest text-primary-300 mb-2">{{ $.Params.casesResultLabel | default "Result" }}</p>
-          <p class="text-sm text-white font-medium leading-relaxed">{{ .result | markdownify }}</p>
+          <div class="text-sm text-white font-medium leading-relaxed">{{ .result | markdownify }}</div>
         </div>
       </article>
       {{ end }}
@@ -357,7 +388,7 @@
       <h2 class="section-title mt-4">{{ . }}</h2>
       {{ end }}
       {{ with .Params.pricingSubtitle }}
-      <p class="mt-4 text-lg text-slate-600 leading-relaxed max-w-2xl">{{ . | markdownify }}</p>
+      <div class="mt-4 text-lg text-slate-600 leading-relaxed max-w-2xl">{{ . | markdownify }}</div>
       {{ end }}
     </header>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
@@ -371,7 +402,7 @@
           <span class="text-4xl font-bold text-slate-950 tracking-tight">{{ .price }}</span>
           {{ with .period }}<span class="text-sm text-slate-500">{{ . }}</span>{{ end }}
         </div>
-        {{ with .description }}<p class="mt-3 text-sm text-slate-600 leading-relaxed">{{ . | markdownify }}</p>{{ end }}
+        {{ with .description }}<div class="mt-3 text-sm text-slate-600 leading-relaxed">{{ . | markdownify }}</div>{{ end }}
         {{ with .features }}
         <ul class="mt-6 space-y-2 flex-1">
           {{ range . }}
@@ -418,7 +449,7 @@
       {{ end }}
       <div class="md:col-span-7 md:pt-4">
         {{ range .Params.aboutBioLines }}
-        <p class="text-slate-600 leading-relaxed mb-5">{{ .line | markdownify }}</p>
+        <div class="text-slate-600 leading-relaxed mb-5">{{ .line | markdownify }}</div>
         {{ end }}
         <!-- Social links -->
         {{ if site.Params.social }}
@@ -587,7 +618,7 @@
   <div class="max-w-2xl mx-auto px-5 sm:px-6 text-center">
     <h2 class="section-title">{{ .Params.newsletterTitle }}</h2>
     {{ with .Params.newsletterSubtitle }}
-    <p class="mt-4 text-lg text-slate-600 leading-relaxed">{{ . | markdownify }}</p>
+    <div class="mt-4 text-lg text-slate-600 leading-relaxed">{{ . | markdownify }}</div>
     {{ end }}
     <form action="{{ .Params.newsletterAction }}" method="post" class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
       <label class="sr-only" for="newsletter-email">Email</label>
@@ -611,7 +642,7 @@
     <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-5">{{ .Params.contactTitle }}</h2>
     {{ end }}
     {{ if .Params.contactSubtitle }}
-    <p class="text-lg text-slate-300 mb-10 max-w-xl mx-auto leading-relaxed">{{ .Params.contactSubtitle | markdownify }}</p>
+    <div class="text-lg text-slate-300 mb-10 max-w-xl mx-auto leading-relaxed">{{ .Params.contactSubtitle | markdownify }}</div>
     {{ end }}
 
     {{/* CTA button: bookCallUrl (e.g. a Cal.com/Calendly link) or a mailto to contactEmail */}}
