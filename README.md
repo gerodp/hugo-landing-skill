@@ -71,6 +71,14 @@ workflow](.github/workflows/canary.yml) scaffolds and builds it against the
 **latest Hugo release**, so incompatibilities with new Hugo versions surface
 as CI failures (and an auto-filed issue) instead of user bug reports.
 
+Contributing? Activate the fast pre-commit hook once per clone — it runs
+script syntax checks and a scaffold/translation-check round trip (~2 s), so
+canary-class failures are caught before you push:
+
+```sh
+git config core.hooksPath .githooks
+```
+
 ## Requirements
 
 - Hugo ≥ 0.146 (standard edition is fine)

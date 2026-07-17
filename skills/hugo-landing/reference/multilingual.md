@@ -31,12 +31,15 @@ block. Then YOU translate:
 
 ## Translation completeness
 
-Every page must exist, translated, in every language — `verify.sh` fails if
-any language is missing a `.md` file present in the default language (or has
-one the default language lacks), if any file is a byte-identical copy of its
+Every page must exist, translated, in every language. The scaffolded site
+ships `scripts/check-translations.sh`, which fails if any language is
+missing a `.md` file present in the default language (or has one the
+default language lacks), if any file is a byte-identical copy of its
 default-language source, or if an `i18n/<xx>.toml` is missing/identical to
-the default one. When adding new content later, always create it in all
-languages at once.
+the default one. It runs in three places: the skill's `verify.sh`, the
+site's pre-commit hook, and the site's CI workflow — untranslated content
+never reaches a push. When adding new content later, always create it in
+all languages at once.
 
 ## i18n keys
 

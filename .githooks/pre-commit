@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Skill-repo pre-commit hook (activate once per clone with:
+#   git config core.hooksPath .githooks
+# ). Fast checks only — no npm install, no Hugo build; CI's canary covers
+# those. Catches script syntax errors and scaffold/translation-check
+# regressions (the class of failure that otherwise only surfaces when the
+# canary workflow runs) before they are committed.
+set -euo pipefail
+
+echo "pre-commit: bash -n on all scripts"
+find skills -name '*.sh' -print0 | while IFS= read -r -d '' f; do
+  bash -n "$f" || { echo "pre-commit: syntax error in $f" >&2; exit 1; }
+done
+bash -n skills/hugo-landing/template/.githooks/pre-commit
+
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+
+echo "pre-commit: scaffold + translation-check round trip"
+skills/hugo-landing/scripts/scaffold.sh --dir "$TMP/site" --name "Hook Test" \
+  --url https://hook.example --deploy github-pages --hugo-version 0.146.0 >/dev/null
+skills/hugo-landing/scripts/add-language.sh --dir "$TMP/site" --code es --name "Español" >/dev/null
+
+if (cd "$TMP/site" && bash scripts/check-translations.sh >/dev/null 2>&1); then
+  echo "pre-commit: check-translations.sh MUST fail on untranslated stubs — it passed" >&2
+  exit 1
+fi
+find "$TMP/site/content/es" -name '*.md' -exec sh -c 'printf "\n<!-- es -->\n" >> "$1"' _ {} \;
+perl -pi -e "s/other = 'Read more'/other = 'Leer más'/" "$TMP/site/i18n/es.toml"
+if ! (cd "$TMP/site" && bash scripts/check-translations.sh >/dev/null); then
+  echo "pre-commit: check-translations.sh failed on translated content" >&2
+  exit 1
+fi
+
+echo "pre-commit: --no-blog scaffold leaves no blog files"
+skills/hugo-landing/scripts/scaffold.sh --dir "$TMP/nb" --name "Hook Test" \
+  --url https://hook.example --deploy netlify --hugo-version 0.146.0 --no-blog >/dev/null
+LEFT=$(find "$TMP/nb" -name '*blog*' -not -path '*/node_modules/*' | head -1)
+if [[ -n "$LEFT" ]]; then
+  echo "pre-commit: --no-blog left blog file: $LEFT" >&2
+  exit 1
+fi
+
+echo "pre-commit: ok"

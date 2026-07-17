@@ -6,6 +6,12 @@
 # a push instead of by GitHub Actions. Skip in an emergency with --no-verify.
 set -euo pipefail
 
+echo "pre-commit: translation parity"
+if ! bash scripts/check-translations.sh; then
+  echo "pre-commit: untranslated content — commit aborted (translate the files above)" >&2
+  exit 1
+fi
+
 if [[ ! -d node_modules ]]; then
   echo "pre-commit: node_modules/ not found — run \`npm install\` first" >&2
   exit 1
