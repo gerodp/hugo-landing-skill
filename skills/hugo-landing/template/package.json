@@ -13,7 +13,7 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.5.4",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "tailwindcss": "^3.4.0"
